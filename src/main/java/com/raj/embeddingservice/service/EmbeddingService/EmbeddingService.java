@@ -69,6 +69,6 @@ public class EmbeddingService {
 /// okay 
 /// 6 is the most import part is it is synchronous means suppose it call gimini and wait its response means one work at 
 /// a time okay and this is the waste of time and resource okay 
-/// and we want to do something okay  
+/// and we want to do something okay 	 
 /// 
 /// 
