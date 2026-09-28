@@ -3,15 +3,12 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiEmbeddingModel;
-import dev.langchain4j.model.googleai.GroundingMetadata.Segment;
 import dev.langchain4j.model.output.Response;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class EmbeddingServiceV2 {
   private final EmbeddingModel embeddingModel;
@@ -58,6 +55,22 @@ public class EmbeddingServiceV2 {
         	throw new IllegalArgumentException("batch size is big ");
         }
         
+        //the validateion 
+        if(texts.stream().anyMatch((oneText)->oneText==null))
+        {
+        	throw new IllegalArgumentException("text list cannot contain null value okay  ");
+        }
+        if(texts.stream().anyMatch(text->text.isBlank()))
+        {
+        	throw new IllegalArgumentException(
+                    "Text cannot be empty or blank");
+        }
+        
+        if (texts.stream().anyMatch(text -> text.length() > MAX_TEXT_LENGTH)) {
+            throw new IllegalArgumentException(
+                "One or more texts exceed the maximum length of " + MAX_TEXT_LENGTH + " characters"
+            );
+        }
         // embedAll() method input type is segment so we convert input data to segment okay 
         List<TextSegment> segment =texts
         		.stream()
