@@ -1,3 +1,4 @@
+
 package com.raj.embeddingservice.v2.service;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
