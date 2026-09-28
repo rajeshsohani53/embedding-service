@@ -9,8 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 @Service
 public class EmbeddingServiceV2 {
+  private static final Logger log = LoggerFactory.getLogger(EmbeddingServiceV2.class);
   private final EmbeddingModel embeddingModel;
   private static final int MAX_TEXT_LENGTH = 8000;
   private static final int MAX_BATCH_SIZE = 100;
@@ -38,36 +43,44 @@ public class EmbeddingServiceV2 {
      
     public List<List<Float>> embedBatch(List<String> texts)
     {
+    	log.info("embedBatch called with {} texts", texts == null ? 0 : texts.size());
+
         /// so next we check the input text is null or not
         if(texts==null)
         {
         	// if it null then we will throw an exception okay 
+        	 log.warn("text list cannot be null");
         	throw new IllegalArgumentException("text list cannot be null");
         }
         
         if (texts.isEmpty()) {
+        	log.warn("Texts list cannot be empty");
             throw new IllegalArgumentException("Texts list cannot be empty");
         }
          
         // list must must not exist more than batchh size 
         if(texts.size()>MAX_BATCH_SIZE)
         {
+        	log.warn("batch size is big ");
         	throw new IllegalArgumentException("batch size is big ");
         }
         
         //the validateion 
         if(texts.stream().anyMatch((oneText)->oneText==null))
         {
+        	log.warn("text list cannot contain null value okay ");
         	throw new IllegalArgumentException("text list cannot contain null value okay  ");
         }
         if(texts.stream().anyMatch(text->text.isBlank()))
         {
+        	log.warn("Text cannot be empty or blank");
         	throw new IllegalArgumentException(
                     "Text cannot be empty or blank");
         }
         
         if (texts.stream().anyMatch(text -> text.length() > MAX_TEXT_LENGTH)) {
-            throw new IllegalArgumentException(
+           log.warn("One or more texts exceed the maximum length");
+        	throw new IllegalArgumentException(
                 "One or more texts exceed the maximum length of " + MAX_TEXT_LENGTH + " characters"
             );
         }
